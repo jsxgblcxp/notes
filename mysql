@@ -1,0 +1,365 @@
+____________________________ commands ____________________________ 
+[ select ] 从数据库表中获取数据
+	select * from				
+		sql 语句对大小写不敏感。select 等效于 select
+
+	select distinct 列名称 from 表名称 
+		仅仅列出不同（distinct）的值。
+
+		
+[ insert ] 向数据库表中插入数据
+insert into 表名称 values (值1, 值2,....)
+	eg.  insert into persons values ('gates', 'bill', 'xuanwumen 10', 'beijing')
+
+[ update ] 更新数据库表中的数据
+update 表名称 set 列名称 = 新值 where 列名称 = 某值
+	eg.update person set firstname = 'fred' where lastname = 'wilson' 
+           update person set address = 'zhongshan 23', city = 'nanjing' where lastname = 'wilson' ,update more than oneline
+
+[ delete ] 从数据库表中删除数据
+delete from 表名称 where 列名称 = 值
+	eg. delete from person where lastname = 'wilson' 
+	    delete * from table_name 删除所有行
+	    delete from table_name 删除所有行
+
+[ show ]
+show databases;  show all the database here;
+
+[ use ]
+use db_test; 使用db_test
+
+[ create ]
+	(create database)
+		CREATE DATABASE db_name; 
+	(create table )
+		CREATE TABLE 表名称
+		(
+		 列名称1 数据类型,
+		 列名称2 数据类型,
+		 列名称3 数据类型,
+		 ....
+		 )
+		-----
+		数据类型		
+		integer(size) 		|仅容纳整数。在括号内规定数字的最大位数。
+		int(size)
+		smallint(size)
+		tinyint(size)
+		decimal(size,d) 	|容纳带有小数的数字。 "size" 规定数字的最大位数。"d" 规定小数点右侧的最大位数。
+		numeric(size,d)
+		char(size)		|容纳固定长度的字符串（可容纳字母、数字以及特殊字符）。
+					|在括号中规定字符串的长度。
+		varchar(size)		|容纳可变长度的字符串（可容纳字母、数字以及特殊的字符）。
+					|在括号中规定字符串的最大长度。
+		date(yyyymmdd)		|容纳日期。
+		-----
+		eg.
+		CREATE TABLE Persons
+		(
+			 Id_P int NOT NULL, 			[ NOT NULL ]强制约束不可为空
+			 id_PP int ,
+			 LastName varchar(255),
+			 FirstName varchar(255),
+			 Address varchar(255),
+			 City varchar(255) , 
+			 UNIQUE( LastName ) , 			[ UNIQUE ] 唯一性约束
+			 PRIMARY KEY id( id_PP ) 		[ PRIMARY KEY ]
+			 CHECK( Id_P > 2 AND Id_P < 2000 )	[ CHECK ] 限制数据的范围
+			 City varchar(255) DEFAULT 'Sandnes'    [ DEFAULT ] 给予默认数值 ，当插入的时候没有值的时候给一个默认值.
+		)
+		CREATE TABLE Friend
+		{
+			 Id_P  int AUTO_INCREMENT , 		[ 每次自动 ＋1 ]
+		         friendA int , REFERENCES Persons( Id_P ) [ REFERENCES ] 外键，指向另一个表的某行的某一列.
+		         friendB int , REFERENCES Persons( Id_P )
+		         friendC int , REFERENCES Persons( Id_P )
+		}
+
+	create index - 创建索引（搜索键）
+
+[ alter ]
+alter database - 修改数据库
+alter table - 变更（改变）数据库表
+alter table ADD UNIQUE( id_P ) 在表中添加列， 并且拥有UNIQUE约束.
+
+[ drop ]
+drop table - 删除表
+drop index - 删除索引
+truncate table 表名称，只清理数据.
+
+[  describe ] 显示数据表的结构： 
+describe 表名; 
+
+[ additional for  [select] ]
+	(where)select 列名称 from 表名称 where 列 运算符 值 // selec with where
+		操作符	描述
+		=	等于
+		<>	不等于//注释：在某些版本的 sql 中，操作符 <> 可以写为 !=。
+		>	大于
+		<	小于
+		>=	大于等于
+		<=	小于等于
+		between	在某个范围内
+		like	搜索某种模式
+	(and,or)select * from persons where (firstname='thomas' or firstname='william') and lastname='carter'
+		and ,or链接
+	(order by)语句用于根据指定的列对结果集进行排序。
+		eg.  select company, ordernumber from orders order by company
+		     select company, ordernumber from orders order by company desc 降序
+		     select company, ordernumber from orders order by company asc  生序
+	(top)SELECT TOP number|percent column_name(s)
+		eg. SELECT TOP 2 * FROM Persons  头两条记录。
+		    SELECT TOP 50 PERCENT * FROM Persons 50% 的记录。
+	(like)SELECT * FROM table_name WHERE column_name LIKE pattern
+		like后面可以跟包括%的模式串，%相当于任意长的任意字符.
+			eg.FROM Persons WHERE City LIKE 'N%'
+				SELECT * 从上面的 "Persons" 表中选取居住在以 "N" 开始的城市里的人：
+			   -----
+			   SELECT * FROM Persons WHERE City LIKE '%lon%'
+				从 "Persons" 表中选取居住在包含 "lon" 的城市里的人：
+	(通配符for like)
+		%			替代一个或多个字符
+		_			仅替代一个字符
+		[charlist]		字符列中的任何单一字符
+		[^charlist] [!charlist] 不在字符列中的任何单一字符
+	(in) 相当于并列的or.
+		SELECT * FROM Persons WHERE LastName IN ('Adams','Carter')
+				选取姓氏为 Adams 和 Carter 的人：
+	(between) 相当于取一个范围区间，但是区间开闭不知，在不同的环境中需要测试。
+		eg.SELECT * FROM Persons WHERE LastName BETWEEN 'Adams' AND 'Carter'
+			介于 "Adams"（包括）和 "Carter"（不包括）之间
+		   SELECT * FROM Persons WHERE LastName NOT BETWEEN 'Adams' AND 'Carter' 
+			范围之外使用 NOT 操作符.
+	(alias) 给列或者表起别名，为了好记，也为了更短.
+		SELECT column_name(s) FROM table_name AS alias_name
+		SELECT column_name AS alias_name FROM table_name
+		使用和不使用的效果对比:
+			SELECT po.OrderID, p.LastName, p.FirstName FROM Persons AS p, Product_Orders AS po WHERE p.LastName='Adams' AND p.FirstName='John'
+			SELECT Product_Orders.OrderID, Persons.LastName, Persons.FirstName FROM Persons, Product_Orders WHERE Persons.LastName='Adams' AND Persons.FirstName='John'
+	(joins)相当于把两个表合并，要求是有同类型字段,并且被合并的字段是KEY,简单解释如下：
+		SELECT Persons.LastName, Persons.FirstName, Orders.OrderNo FROM Persons, Orders WHERE Persons.Id_P = Orders.Id_P 和
+		SELECT Personame, Persons.FirstName, Orders.OrderNo FROM Persons INNER JOIN Orders ON Persons.Id_P = Orders.Id_P ORDER BY Persons.LastNameo 效果相同
+			各种不同的join:
+				JOIN/INNER JOIN: 如果表中有至少一个匹配，则返回行
+				LEFT JOIN: 即使右表中没有匹配，也从左表返回有的行
+				RIGHT JOIN: 即使左表中没有匹配，也从右表返回所有的行
+				FULL JOIN: 只要其中一个表中存在匹配，就返回行n
+	(union) 合并两个或多个 SELECT 语句的结果集。
+		SELECT column_name(s) FROM table_name1 
+		UNION 
+		SELECT column_name(s) FROM table_name2
+		!!UNION 内部的 SELECT 语句必须拥有相同数量,数据类型，排列顺序的列。
+		UNION 操作符选取不同的值。如果允许重复的值，请使用 UNION ALL。
+			eg.
+			SELECT E_Name FROM Employees_China
+			UNION
+			SELECT E_Name FROM Employees_USA
+			-----
+			SELECT E_Name FROM Employees_China
+			UNION ALL /* 允许重复数值 */
+			SELECT E_Name FROM Employees_USA
+	(into)把一个表里的东西查出来，然后都插入到另外一个表里面.可用于创建表的备份复件。
+		SELECT * INTO new_table_name [IN externaldatabase] FROM old_tablename 
+		eg.
+			SELECT *
+			INTO Persons_backup
+			FROM Persons
+			-----
+			SELECT *
+			INTO Persons IN 'Backup.mdb'
+			FROM Persons
+			-----
+			SELECT LastName,FirstName
+			INTO Persons_backup
+			FROM Persons
+			-----
+			SELECT Persons.LastName,Orders.OrderNo/* INTO + JOIN  */
+			INTO Persons_Order_Backup
+			FROM Persons
+			INNER JOIN Orders
+			ON Persons.Id_P=Orders.Id_P
+
+[ alter ]用于在已有的表中添加、修改或删除列。
+添加列
+	ALTER TABLE table_name
+	ADD column_name datatype
+删除列( 数据库系统不允许 )
+	ALTER TABLE table_name 
+	DROP COLUMN column_name
+改变列的数据类型
+	ALTER TABLE table_name
+	ALTER COLUMN column_name datatype
+
+[ view ] 整个数据中某些表的某些列的数据组合.但是查起来就像是一个单一的表。 视图总是显示最近的数据。用户查询的是最新的数据.
+创建:
+	CREATE VIEW view_name AS
+	SELECT column_name(s)
+	FROM table_name
+	WHERE condition
+更新:
+	SQL CREATE OR REPLACE VIEW Syntax
+	CREATE OR REPLACE VIEW view_name AS
+	SELECT column_name(s)
+	FROM table_name
+	WHERE condition
+删除：
+	SQL DROP VIEW Syntax
+	DROP VIEW view_name
+eg.
+	CREATE VIEW [Current Product List] AS
+	SELECT ProductID,ProductName
+	FROM Products
+	WHERE Discontinued=No
+	查询这个视图:
+	SELECT * FROM [Current Product List]
+	-----
+	CREATE VIEW [Products Above Average Price] AS
+	SELECT ProductName,UnitPrice
+		FROM Products
+	WHERE UnitPrice>(SELECT AVG(UnitPrice) FROM Products) 
+	查询这个视图:
+	SELECT * FROM [Products Above Average Price]
+	-----
+	视图更新:
+	CREATE VIEW [Current Product List] AS
+	SELECT ProductID,ProductName,Category
+	FROM Products
+	WHERE Discontinued=No
+
+[ index ]
+在不读取整个表的情况下，索引使数据库应用程序可以更快地查找数据。
+更新包含索引的表比更新一个没有索引的表慢，由于索引也需要更新。
+
+在表上创建一个简单的索引。允许使用重复的值：
+CREATE INDEX index_name ON table_name (column_name)
+	eg.  CREATE INDEX PersonIndex ON Person (LastName) 
+	     CREATE UNIQUE INDEX index_name ON table_name (column_name)
+	     	在表上创建一个唯一的索引。唯一的索引意味着两个行不能拥有相同的索引值。
+	     CREATE INDEX PersonIndex ON Person (LastName, FirstName)
+	     	索引不止一个列
+	     CREATE INDEX PersonIndex ON Person (LastName DESC) 
+	     	降序索引某个列中的值
+   	     ALTER TABLE table_name DROP INDEX index_name
+	     	删除表的索引
+____________________________ config ____________________________ 
+
+1.yum install mysql-server 才是安装mysql-server 。。
+2.使用 service 启动：service mysqld restart
+  使用 mysqld 脚本启动：/etc/inint.d/mysqld restart
+3.忘记了mysql的密码怎么办.
+	如果忘记了mysql的root密码，可以用以下方法重新设置：
+	1. kill掉系统里的mysql进程；
+		killall -term mysqld
+	2. 用以下命令启动mysql，以不检查权限的方式启动；
+		safe_mysqld cskip-grant-tables &
+	3. 然后用空密码方式使用root用户登录 mysql；
+		mysql -u root
+	4. 修改root用户的密码；
+		mysql> update mysql.user set password=password(‘新密码’) where user=’root’;
+		mysql> flush privileges;
+		mysql> quit
+____________________________ functions ____________________________ 
+[ AVG() ] 
+返回数值列的平均值。NULL 值不包括在计算中。
+SELECT AVG(column_name) FROM table_name
+eg.
+计算 "OrderPrice" 字段的平均值。
+	SELECT AVG(OrderPrice) AS OrderAverage FROM Orders
+找到 OrderPrice 值高于 OrderPrice 平均值的客户。
+	SELECT Customer FROM Orders
+	WHERE OrderPrice>(SELECT AVG(OrderPrice) FROM Orders)
+[ COUNT() ]
+匹配指定条件的行数。（NULL 不计入）
+SELECT COUNT(column_name) FROM table_name
+表中的记录数：
+SELECT COUNT(*) FROM table_name
+指定列的不同值的数目：
+SELECT COUNT(DISTINCT column_name) FROM table_name
+eg.
+	SELECT COUNT(Customer) AS CustomerNilsen FROM Orders
+	WHERE Customer='Carter'
+[ FIRST() ]
+指定的字段中第一个记录的值。
+SELECT FIRST(column_name) FROM table_name
+eg.
+	SELECT FIRST(OrderPrice) AS FirstOrderPrice FROM Orders
+[ LAST() ]
+返回指定的字段中最后一个记录的值。
+SELECT LAST(column_name) FROM table_name
+eg.
+	SELECT LAST(OrderPrice) AS LastOrderPrice FROM Orders
+[ MAX() ]
+返回一列中的最大值。 （NULL 不计入）
+SELECT MAX(column_name) FROM table_name
+eg.
+	SELECT MAX(OrderPrice) AS LargestOrderPrice FROM Orders
+[ MIN() ]
+返回一列中的最小值。（NULL 不计入）
+SELECT MIN(column_name) FROM table_name
+eg.
+	SELECT MIN(OrderPrice) AS SmallestOrderPrice FROM Orders
+[ SUM() ]
+数值列的总数（总额）。
+SELECT SUM(column_name) FROM table_name
+eg.
+	SELECT SUM(OrderPrice) AS OrderTotal FROM Orders
+[ GROUP BY ]
+结合合计函数，根据一个或多个列对结果集进行分组。
+SELECT column_name, aggregate_function(column_name)
+FROM table_name
+WHERE column_name operator value
+GROUP BY column_name
+eg .
+	SELECT Customer,SUM(OrderPrice) FROM Orders
+	GROUP BY Customer
+	对每个不同的Customer分别计数。
+[ HAVING ]
+类似于where,但是where不能和计数函数一起用.
+SELECT column_name, aggregate_function(column_name)
+FROM table_name
+WHERE column_name operator value
+GROUP BY column_name
+HAVING aggregate_function(column_name) operator value
+eg.
+	SELECT Customer,SUM(OrderPrice) FROM Orders
+	WHERE Customer='Bush' OR Customer='Adams'
+	GROUP BY Customer
+	HAVING SUM(OrderPrice)>1500
+	查找客户 "Bush" 或 "Adams" 拥有超过 1500 的订单总金额。
+[ UCASE() ]
+把字段的值转换为大写。
+SELECT UCASE(column_name) FROM table_name
+eg.
+	SELECT UCASE(LastName) as LastName,FirstName FROM Persons
+	结果将都是大写的
+[ LCASE() ]
+把字段的值转换为小写。
+SELECT LCASE(column_name) FROM table_name
+eg.
+	SELECT LCASE(LastName) as LastName,FirstName FROM Persons
+	结果将都是小写的
+[ MID() ]
+从文本字段中提取字符。
+SELECT MID(column_name,start[,length]) FROM table_name
+column_name	必需。要提取字符的字段。
+start		必需。规定开始位置（起始值是 1）。
+length		可选。要返回的字符数。如果省略，则 MID() 函数返回剩余文本。
+SELECT MID(City,1,3) as SmallCity FROM Persons
+
+[ LEN() ]
+文本字段中值的长度。
+SELECT LEN(column_name) FROM table_name
+[ ROUND() ]
+把数值字段舍入为指定的小数位数。
+SELECT ROUND(column_name,decimals) FROM table_name
+eg .
+	SELECT ProductName, ROUND(UnitPrice,0) as UnitPrice FROM Products
+[ NOW() ]
+当前的日期和时间。
+SELECT NOW() FROM table_name
+[ FORMAT() ]
+用于对字段的显示进行格式化。
+SELECT FORMAT(column_name,format) FROM table_name
+eg.
+	SELECT ProductName, UnitPrice, FORMAT(Now(),'YYYY-MM-DD') as PerDate
+
