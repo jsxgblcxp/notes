@@ -573,3 +573,6 @@ if (mysql_query($sql)) {
 mysql_close(); /* 关闭连接 */
 $link = mysql_connect($host, $user, $pass);
 mysql_close($link);/* 关闭某个连接 */
+
+
+

@@ -1,0 +1,4 @@
+
+开启： service iptables start 
+关闭： service iptables stop 
+

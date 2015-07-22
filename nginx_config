@@ -1,0 +1,8 @@
+
+
+   ____________________________  永远不要迷信别人的配置 ！！@＃！@＃！最基本的事情还是要自己做____________________________ 
+
+1.当本地配置改变，但是浏览器访问仍旧错误跳转，这时应当查看浏览器的数据请求流程，看看是否有301和302返回，即暂时重定向&永久重定向。
+2.php解析器没有启动或者配置错误的时候，所有交付给php解析的页面会反悔An error occured
+nginx的日志会显示 2015/07/18 19:26:24 [error] 3173#0: *32 connect() failed (111: Connection refused) while connecting to upstream, client: 10.0.1.17, server: localhost, request: "GET /index.html HTTP/1.1", upstream: "fastcgi://127.0.0.1:9000", host: "10.0.1.29"
+3.php-cgi启动的时候要用root，不然会写入目录失败.
