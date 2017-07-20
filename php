@@ -381,6 +381,10 @@ while(!feof($fp)) {
 }
 fclose($fp);
 -----
+$myfile = fopen("webdictionary.txt", "r") or die("Unable to open file!");
+echo fread($myfile,filesize("webdictionary.txt"));
+fclose($myfile);
+-----
 一般情况下在对文件进行操作的时候需要先，PHP中常用来判断文件存在的函数有两个is_file与file_exists.
 $filename = './test.txt';
 if (file_exists($filename)) {/* 判断文件,目录是否存在 */
@@ -399,6 +403,10 @@ if (is_writeable($filename)) {  /* 是否可写 */
 if (is_readable($filename)) { /* 是否可读 */
 	    echo file_get_contents($filename);
 }
+-----
+<?php
+echo readfile("webdictionary.txt");
+?>
 -----
 $filename = './test.txt';
 $data = 'test';
@@ -432,16 +440,27 @@ echo date("Y-m-d"); /* 得到当前日期 */
 echo date("Y-m-d",'1396193923');// 把时间戳转换成当前日期
 -----
 日期向时间戳转换
-echo strtotime('2014-04-29');//1398700800，这个数字表示从1970年1月1日 00:00:00 到2014年4月29号经历了1398700800秒
-echo strtotime('2014-04-29 00:00:01');//1398700801，这个数字表示从1970年1月1日 00:00:00 到2014-04-29 00:00:01时经历了1398700801秒
-echo strtotime("now");//效果同echo time();把now转换为时间戳时间
-echo strtotime("+1 seconds");//效果同echo time() + 1; 当前时间戳加一秒；
-echo strtotime("+1 day");// 当前时间戳加一天；
-echo strtotime("+1 week");//当前时间戳加一周；
-echo strtotime("+1 week 3 days 7 hours 5 seconds");//当前时间加上了1周3天7小时5秒。
+strtotime('2014-04-29');//1398700800，这个数字表示从1970年1月1日 00:00:00 到2014年4月29号经历了1398700800秒
+strtotime('2014-04-29 00:00:01');//1398700801，这个数字表示从1970年1月1日 00:00:00 到2014-04-29 00:00:01时经历了1398700801秒
+strtotime("now");//效果同echo time();把now转换为时间戳时间
+strtotime("+1 seconds");//效果同echo time() + 1; 当前时间戳加一秒；
+strtotime("+1 day");// 当前时间戳加一天；
+strtotime("+1 week");//当前时间戳加一周；
+strtotime("+1 week 3 days 7 hours 5 seconds");//当前时间加上了1周3天7小时5秒。
+strtotime("tomorrow");
+strtotime("next Saturday");
+strtotime("Saturday");
+strtotime("+3 Months");
+-----
+创建时间戳
+mktime(hour,minute,second,month,day,year)
 -----
 echo date('Y-m-d H:i:s', time()); //输出为：2014-05-01 15:15:22 ,格林威治时间
 echo gmdate('Y-m-d H:i:s', time()); //输出为：2014-05-01 07:15:22,格林威治时间
+-----
+设置时区
+date_default_timezone_set("Asia/Shanghai");
+
 23.异常
 基本语法
 try{
@@ -576,3 +595,700 @@ mysql_close($link);/* 关闭某个连接 */
 
 
 
+
+22. popen
+$fd = popen( "ps aux | grep xml|  grep vas" , "r" );
+echo fread( $fd , "10000" );
+pclose($fd);
+
+23.fork ,not avaliable on servser side.
+
+<?php
+$pid = pcntl_fork();
+if ($pid == -1) {
+     die('could not fork');
+} else if ($pid) {
+     // we are the parent
+     pcntl_wait($status); //Protect against Zombie children
+} else {
+     // we are the child
+}
+?>
+
+____________________________ 
+
+
+25.class
+
+---the define of class---
+<?php
+class Person {
+    //成员变量
+    var $name;    //人的名字
+    var $age;    //人的年龄
+
+    //人的成员 say() 方法
+    function say() {
+        echo "我的名字叫：".$this->name."<br />";
+	echo "我的年龄是：".$this->age;
+    }
+}    //类定义结束
+
+//实例化一个对象
+$p1 = new Person();
+//给 $p1 对象属性赋值
+$p1->name = "张三";  
+$p1->age = 20;
+//调用对象中的 say()方法
+$p1->say();
+?>
+
+---the extend of class---
+<?php
+class Person {
+    var $name;
+    var $age;
+
+    function say() {
+        echo "我的名字叫：".$this->name."<br />";
+	echo "我的年龄是：".$this->age;
+    }
+}
+class Student extends Person {
+    var $school;    //学生所在学校的属性
+	
+    function study() {
+        echo "我的名子叫：".$this->name."<br />";
+        echo "我正在".$this->school."学习";
+    }		
+}
+
+$t1 = new Student();
+$t1->name = "张三";
+$t1->school = "人民大学";
+$t1->study();
+?>
+
+---the construct & destruct of class---
+<?php
+class Person {
+    var $name;
+    var $age;
+
+    //定义一个构造方法初始化赋值
+    function __construct($name, $sex, $age) {
+        $this->name=$name;
+        $this->age=$age;
+    }
+
+    function __destruct()
+    {
+    }
+    function say() {
+        echo "我的名字叫：".$this->name."<br />";
+	echo "我的年龄是：".$this->age;
+    }
+}
+
+$p1=new Person("张三", 20);
+$p1->say();
+?>
+---the final version of class---
+final class Person
+{
+    ......
+}
+
+class Person
+{
+    final function say()
+    {
+        ......
+    }
+}
+
+---the interface of class---
+<?php
+//定义接口
+interface User{
+    function getDiscount();
+    function getUserType();
+}
+//VIP用户 接口实现
+class VipUser implements User{
+    // VIP 用户折扣系数
+    private $discount = 0.8;
+    function getDiscount() {
+        return $this->discount;
+    }
+    function getUserType() {
+        return "VIP用户";
+    }
+}
+class Goods{
+    var $price = 100;
+    var $vc;
+    //定义 User 接口类型参数，这时并不知道是什么用户
+    function run(User $vc){
+        $this->vc = $vc;
+        $discount = $this->vc->getDiscount();
+	$usertype = $this->vc->getUserType();
+        echo $usertype."商品价格：".$this->price*$discount;
+    }
+}
+
+$display = new Goods();
+$display ->run(new VipUser);	//可以是更多其他用户类型
+?>
+
+---the interface & implements of class---
+<?php
+//定义接口
+interface User{
+    function getDiscount();
+    function getUserType();
+}
+//VIP用户 接口实现
+class VipUser implements User{
+    // VIP 用户折扣系数
+    private $discount = 0.8;
+    function getDiscount() {
+        return $this->discount;
+    }
+    function getUserType() {
+        return "VIP用户";
+    }
+}
+
+class Goods{
+    var $price = 100;
+    var $vc;
+    function run(User $vc){ //定义 User 接口类型参数，这时并不知道是什么用户 , self defined type
+        $this->vc = $vc;
+        $discount = $this->vc->getDiscount();
+	$usertype = $this->vc->getUserType();
+        echo $usertype."商品价格：".$this->price*$discount;
+    }
+}
+$display = new Goods();
+$display ->run(new VipUser);	//可以是更多其他用户类型
+?>
+---the public , protected ,  private of class---
+	       public	protected	private
+同一个类中	√	√       	√
+类的子类中	√	√	
+所有的外部成员	√	
+
+<?php
+class Person {
+    //将成员属性定义为 private
+    private $name;
+    private $age;
+
+    //定义一个构造方法初始化赋值
+    function __construct($name, $age) {
+        $this->name=$name;
+        $this->age=$age;
+    }
+
+    function say() {
+        echo "我的名字叫：".$this->name."<br />";
+	echo "我的年龄是：".$this->age;
+    }
+}
+
+$p1=new Person("张三", 20);
+$p1->say();
+?>
+
+---the auto_load of class---
+<?php /* this is the file of Person */
+class Person {
+    private $name;
+    private $age; 
+    function __construct($name, $age) {
+        $this->name = $name;
+        $this->age = $age;
+    }
+
+    function say() {
+	echo "我的名字叫：".$this->name."<br />";
+	echo " 我的年龄是：".$this->age;
+    }
+}
+?>
+<?php
+function __autoload($class_name) 
+{
+    require_once $class_name.'.php'; /* load the Person.php  for the class Person */
+}
+
+//当前页面 Pserson 类不存在则自动调用 __autoload() 方法，传入参数 Person
+$p1 = new Person("张三","20");
+$p1 -> say();
+?>
+
+---the :: of class---
+
+==use on static member
+<?php
+Class Person{
+    // 定义静态成员属性
+    public static $country = "中国";
+    // 定义静态成员方法
+    public static function myCountry() {
+        //内部访问静态成员属性
+        echo "我是".self::$country."人<br />";
+    }
+}
+
+// 输出静态成员属性值
+echo Person::$country."<br />";
+// 访问静态方法
+Person::myCountry();
+?>
+
+==use on the member of father class
+class Person {
+    var $name;
+    var $sex;
+    var $age;
+    function say() {
+        echo "我的名字叫：".$this->name."<br />";
+	echo "性别：".$this->sex."<br />";
+	echo "我的年龄是：".$this->age;
+    }
+}
+class Student extends Person {
+    var $school;
+	
+    function say() {
+        parent::say();
+        echo "我在".$this->school."上学";
+    }
+}
+
+---the status member of class---
+<?php
+Class Person{
+    public static $country = "中国";
+    public static function myCountry() {
+        echo "我是".self::$country."人<br />"; /* self use */
+    }
+}
+class Student extends Person {
+    function study() {
+        echo "我是". parent::$country."人<br />"; /* parent use */
+    }
+}
+// 输出成员属性值
+echo Person::$country."<br />";		// 输出：中国
+$p1 = new Person();
+// 访问静态成员方法
+// 静态方法也可通过对象访问：
+$p1->myCountry();
+// 子类中输出成员属性值
+echo Student::$country."<br />";	// 输出：中国
+$t1 = new Student();
+$t1->study();				// 输出：我是中国人
+?>
+
+---the set and get of class---
+function __set($property_name, $value)
+{ 
+    $this->$property_name = $value; 
+}
+
+function __get($property_name, $value)
+{ 
+    return isset($this->$property_name) ? $this->$property_name : null;
+}
+<?php
+class Person {
+    private $name;
+    private $sex;
+    private $age;
+
+    //__set()方法用来设置私有属性
+    function __set($property_name, $value) { 
+        echo "在直接设置私有属性值的时候，自动调用了这个 __set() 方法为私有属性赋值<br />";
+        $this->$property_name = $value; 
+    }
+    //__get()方法用来获取私有属性
+    function __get($property_name) {  
+        echo "在直接获取私有属性值的时候，自动调用了这个 __get() 方法<br />";
+        return isset($this->$property_name) ? $this->$property_name : null;
+    }
+}
+
+$p1=new Person(); //直接为私有属性赋值的操作， 会自动调用 __set() 方法进行赋值
+$p1->name = "张三"; //直接获取私有属性的值， 会自动调用 __get() 方法，返回成员属性的值
+echo "我的名字叫：".$p1->name;	
+
+__isset() 检测私有属性值是否被设定.
+__unset() 方法用于删除私有属性.
+
+---the __call of class---
+
+When call the function that does not exist ,
+function __call($function_name, $args)
+{
+    echo "你所调用的函数：$function_name(参数：<br />";
+    var_dump($args);
+    echo ")不存在！";
+}
+
+---the abstract of class---
+只要一个类里面有一个方法是抽象方法，那么这个类就要定义为抽象类。抽象类同样用 abstract 关键字来定义
+<?php
+abstract class AbstractClass{
+    // 定义抽象方法
+    abstract protected function getValue();
+    // 普通方法
+    public function printOut(){
+        print $this->getValue()."<br />";
+    }
+}
+class ConcreteClass extends AbstractClass{
+    protected function getValue(){
+        return "抽象方法的实现";
+    }
+}
+
+$class1 = new ConcreteClass;
+$class1->printOut();
+?>
+---the clone of class---
+深度复制
+<?php
+class Person {
+    private $name;
+    private $age;
+
+    function __construct($name, $age) {
+        $this->name = $name;
+        $this->age = $age;
+    }
+
+    function say() {
+        echo "我的名字叫：".$this->name;
+	echo " 我的年龄是：".$this->age."<br />";
+    }
+    function __clone() {
+        $this->name = "我是假的".$this->name;
+        $this->age = 30;
+    }
+}
+
+$p1 = new Person("张三", 20);
+$p1->say();
+$p2 = clone $p1;
+$p2->say();
+?>
+---the serialize of class---
+
+<?php
+class Person {
+    private $name;
+    private $age;
+
+    function __construct($name, $age) {
+        $this->name = $name;
+        $this->age = $age;
+    }
+
+    function say() {
+	echo "我的名字叫：".$this->name."<br />";
+	echo " 我的年龄是：".$this->age;
+    }
+}
+
+$p1 = new Person("张三", 20);
+$p1_string = serialize($p1);
+unserialize
+//将对象序列化后写入文件
+$fh = fopen("p1.text", "w");
+fwrite($fh, $p1_string);
+fclose($fh);
+?>
+In p1.text
+O:6:"Person":2:{s:12:" Person name";s:4:"张三";s:11:" Person age";i:20;}
+<?php
+class Person {
+    private $name;
+    private $age;
+
+    function __construct($name, $age) {
+        $this->name = $name;
+        $this->age = $age;
+    }
+
+    function say() {
+	echo "我的名字叫：".$this->name."<br />";
+	echo " 我的年龄是：".$this->age;
+    }
+}
+
+$p2 = unserialize(file_get_contents("p1.text"));
+$p2 -> say();
+?>
+
+---the other of class---
+class book {
+    function getName() {
+        return 'bookname';
+    }
+}
+$func = 'getName';
+$book = new book();
+$book->$func();/* 把字符串映射到函数 */
+
+function func() {
+}
+
+if (function_exists('func')){/* 测试函数是否存在 */
+    echo 'exists';
+}
+~~~~~~~~~~~~~~
+6.get remote data by get 
+$file_contents = file_get_content('http://localhost/operate.php?act=get_user_list&type=json') 
+~~~~~~~~~~~~~~
+get remote data by post(需要开启PHP curl支持)。 
+$url = 'http://localhost/operate.php?act=get_user_list&type=json';
+$ch = curl_init ();
+curl_setopt ( $ch, CURLOPT_URL, $url );
+curl_setopt ( $ch, CURLOPT_RETURNTRANSFER, 1 );
+curl_setopt ( $ch, CURLOPT_CONNECTTIMEOUT, 10 );
+curl_setopt ( $ch, CURLOPT_POST, 1 ); //启用POST提交
+$file_contents = curl_exec ( $ch );
+curl_close ( $ch );
+~~~~~~~~~~~~~~
+const
+const constant = "value";
+~~~~~~~~~~~~~~
+<?php
+Class
+    // 定义常量
+    const country = "中国";
+
+    public function myCountry() {
+        //内部访问常量
+        echo "我是".self::country."人<br />";
+    }
+}
+
+// 输出常量
+echo Person::country."<br />";
+// 访问方法
+$p1 = new Person();
+$p1 -> myCountry();
+x?>
+
+json_decode($json);
+~~~~~~~~~~~~~~
+表单使用
+<html>
+        <body>
+        <form method="post"  action="<?php echo $_SERVER["PHP_SELF"];?>"><br>
+
+        <!-- <form method="post"  action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>"><br> -->
+
+        1st text<input type=text  name="see"><br>
+        2nd show<input type="textarea"  name="comment"> <br>
+        <input type="submit"  name="anohter_submit" value="I_am_subbing"  > <br>
+        </form>
+        </body>
+<html>
+<?php
+
+function text_input( $data )
+{
+        $data = trim( $data );
+        $data = stripslashes( $data );
+        $data = htmlspecialchars( $data );
+        return $data;
+}
+
+var_dump( $_POST );
+echo "  <br>";
+foreach ( $_POST as $key => & $value )
+{
+        $value = text_input( $value );
+}       
+var_dump( $_POST );
+
+?>
+~~~~~~~~~~~~~~
+表单验证
+<?php
+
+function text_input( $data )
+{
+        $data = trim( $data );
+        $data = stripslashes( $data );
+        $data = htmlspecialchars( $data );
+        return $data;
+}       
+
+if ( "POST" ==  $_SERVER["REQUEST_METHOD"] ) {
+        var_dump( $_POST ); 
+        echo 123;error not_influce
+        if ( empty( $_POST[ "name" ] ) ) {
+                $name_err = "need name here";
+        } else {
+                $name_err = "";
+        }       
+        
+        if ( empty( $_POST[ "dream" ] ) ) {
+                $dream_err = "need dream here";
+        } else {
+                $dream_err = "";
+        }       
+        
+}
+
+
+var_dump( $_POST );
+echo "  <br>";
+foreach ( $_POST as $key => & $value )
+{
+        $value = text_input( $value );
+}       
+var_dump( $_POST );
+
+?>
+        
+<html>
+        <body>
+        <form method="post"  action="<?php echo $_SERVER["PHP_SELF"];?>"><br>
+        
+        <!-- <form method="post"  action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>"><br> -->
+        
+        1st text<input type=text  name="name"><span class="error">*<?php echo $name_err ;?></span><br>
+        2nd show<input type="textarea"  name="dream"><span class="error"> *<?php echo $dream_err;?></span> <br>
+        <input type="submit"  name="anohter_submit" value="I_am_subbing"  > <br> 
+        </form>
+        </body>
+<html>  
+~~~~~~~~~~~~~~
+全局变量& 超全局变量
+$GLOBALS
+<?php 
+$x = 75; 
+$y = 25;
+ 
+function addition() { 
+  $GLOBALS['z'] = $GLOBALS['x'] + $GLOBALS['y']; 
+}
+ 
+addition(); 
+echo $z; 
+?>
+~~~~~~~~~~~~~~
+what $_SERVER is about ????
+$_SERVER['PHP_SELF']	返回当前执行脚本的文件名。
+$_SERVER['GATEWAY_INTERFACE']	返回服务器使用的 CGI 规范的版本。
+$_SERVER['SERVER_ADDR']	返回当前运行脚本所在的服务器的 IP 地址。
+$_SERVER['SERVER_NAME']	返回当前运行脚本所在的服务器的主机名（比如 www.w3school.com.cn）。
+$_SERVER['SERVER_SOFTWARE']	返回服务器标识字符串（比如 Apache/2.2.24）。
+$_SERVER['SERVER_PROTOCOL']	返回请求页面时通信协议的名称和版本（例如，“HTTP/1.0”）。
+$_SERVER['REQUEST_METHOD']	返回访问页面使用的请求方法（例如 POST）。
+$_SERVER['REQUEST_TIME']	返回请求开始时的时间戳（例如 1577687494）。
+$_SERVER['QUERY_STRING']	返回查询字符串，如果是通过查询字符串访问此页面。
+$_SERVER['HTTP_ACCEPT']	返回来自当前请求的请求头。
+$_SERVER['HTTP_ACCEPT_CHARSET']	返回来自当前请求的 Accept_Charset 头（ 例如 utf-8,ISO-8859-1）
+$_SERVER['HTTP_HOST']	返回来自当前请求的 Host 头。
+$_SERVER['HTTP_REFERER']	返回当前页面的完整 URL（不可靠，因为不是所有用户代理都支持）。
+$_SERVER['HTTPS']	是否通过安全 HTTP 协议查询脚本。
+$_SERVER['REMOTE_ADDR']	返回浏览当前页面的用户的 IP 地址。
+$_SERVER['REMOTE_HOST']	返回浏览当前页面的用户的主机名。
+$_SERVER['REMOTE_PORT']	返回用户机器上连接到 Web 服务器所使用的端口号。
+$_SERVER['SCRIPT_FILENAME']	返回当前执行脚本的绝对路径。
+$_SERVER['SERVER_ADMIN']	该值指明了 Apache 服务器配置文件中的 SERVER_ADMIN 参数。
+$_SERVER['SERVER_PORT']	Web 服务器使用的端口。默认值为 “80”。
+$_SERVER['SERVER_SIGNATURE']	返回服务器版本和虚拟主机名。
+$_SERVER['PATH_TRANSLATED']	当前脚本所在文件系统（非文档根目录）的基本路径。
+$_SERVER['SCRIPT_NAME']	返回当前脚本的路径。
+$_SERVER['SCRIPT_URI']	返回当前页面的 URI。
+~~~~~~~~~~~~~~
+$_REQUEST
+<html>
+<body>
+
+<form method="post" action="<?php echo $_SERVER['PHP_SELF'];?>">
+Name: <input type="text" name="fname">
+<input type="submit">
+</form>
+
+<?php 
+$name = $_REQUEST['fname']; 
+echo $name; 
+?>
+
+</body>
+</html>
+~~~~~~~~~~~~~~
+$_POST & $_GET
+<html>
+        <body>
+
+                <form method="post" action="<?php echo $_SERVER['PHP_SELF'];?>">
+                Name: <input type="text" name="fname">
+                <input type="submit">
+                </form>
+
+                <?php 
+                $name = $_POST['fname']; 
+                echo $name; 
+                ?>
+        </body>
+</html>
+antoher
+
+<html>
+        <body>
+                <?php 
+                        echo "Study " . $_GET['subject'] . " at " . $_GET['web'];
+                ?>
+        </body>
+</html>
+~~~~~~~~~~~~~~
+$_FILES
+$_ENV
+$_COOKIE
+$_SESSION
+
+32.对于表单的验证
+
+名字
+~~~~~~~~~~~~~~
+$name = test_input($_POST["name"]);
+if (!preg_match("/^[a-zA-Z ]*$/",$name)) {/* 函数检索字符串的模式，如果模式存在则返回 true，否则返回 false。*/
+  $nameErr = "只允许字母和空格！"; 
+}
+~~~~~~~~~~~~~~
+
+邮件
+~~~~~~~~~~~~~~
+$email = test_input($_POST["email"]);
+if (!preg_match("/([\w\-]+\@[\w\-]+\.[\w\-]+)/",$email)) {
+  $emailErr = "无效的 email 格式！"; 
+}
+~~~~~~~~~~~~~~
+$website = test_input($_POST["website"]);
+if (!preg_match("/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%
+=~_|]/i",$website)) {
+  $websiteErr = "无效的 URL"; 
+}
+~~~~~~~~~~~~~~
+
+33.短小的脚本无处不在
+Website: <input type="text" name="website" value="<?php echo $website;?>">
+
+35.include&require
+include 和 require 语句是相同的，除了错误处理方面：
+require 会生成致命错误（E_COMPILE_ERROR）并停止脚本
+include 只生成警告（E_WARNING），并且脚本会继续
+
+include 'filename';
+require 'filename';
