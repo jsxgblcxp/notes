@@ -3,7 +3,7 @@ ____________________________ commands ____________________________
 	select * from				
 		sql 语句对大小写不敏感。select 等效于 select
 
-	select distinct 列名称 from 表名称 
+	select distinct column_name from 表名称 
 		仅仅列出不同（distinct）的值。
 
 		
@@ -12,12 +12,12 @@ insert into 表名称 values (值1, 值2,....)
 	eg.  insert into persons values ('gates', 'bill', 'xuanwumen 10', 'beijing')
 
 [ update ] 更新数据库表中的数据
-update 表名称 set 列名称 = 新值 where 列名称 = 某值
+update 表名称 set column_name = 新值 where column_name = 某值
 	eg.update person set firstname = 'fred' where lastname = 'wilson' 
            update person set address = 'zhongshan 23', city = 'nanjing' where lastname = 'wilson' ,update more than oneline
 
 [ delete ] 从数据库表中删除数据
-delete from 表名称 where 列名称 = 值
+delete from 表名称 where column_name = 值
 	eg. delete from person where lastname = 'wilson' 
 	    delete * from table_name 删除所有行
 	    delete from table_name 删除所有行
@@ -34,9 +34,9 @@ use db_test; 使用db_test
 	(create table )
 		CREATE TABLE 表名称
 		(
-		 列名称1 数据类型,
-		 列名称2 数据类型,
-		 列名称3 数据类型,
+		 column_name1 数据类型,
+		 column_name2 数据类型,
+		 column_name3 数据类型,
 		 ....
 		 )
 		-----
@@ -74,6 +74,8 @@ use db_test; 使用db_test
 		         friendB int , REFERENCES Persons( Id_P )
 		         friendC int , REFERENCES Persons( Id_P )
 		}
+		-----
+                TIMESTAMP on update ??
 
 	create index - 创建索引（搜索键）
 
@@ -91,7 +93,7 @@ truncate table 表名称，只清理数据.
 describe 表名; 
 
 [ additional for  [select] ]
-	(where)select 列名称 from 表名称 where 列 运算符 值 // selec with where
+	(where)select column_name from 表名称 where 列 运算符 值 // selec with where
 		操作符	描述
 		=	等于
 		<>	不等于//注释：在某些版本的 sql 中，操作符 <> 可以写为 !=。
@@ -185,15 +187,28 @@ describe 表名;
 			ON Persons.Id_P=Orders.Id_P
 
 [ alter ]用于在已有的表中添加、修改或删除列。
-添加列
-	ALTER TABLE table_name
-	ADD column_name datatype
-删除列( 数据库系统不允许 )
-	ALTER TABLE table_name 
-	DROP COLUMN column_name
-改变列的数据类型
-	ALTER TABLE table_name
-	ALTER COLUMN column_name datatype
+        添加列
+                ALTER TABLE table_name
+                ADD column_name datatype
+        删除列( 数据库系统不允许 )
+                ALTER TABLE table_name DROP COLUMN column_name
+        改变列的数据类型
+                ALTER TABLE table_name
+                ALTER COLUMN column_name datatype
+        修改列
+                ALTER TABLE table_name CHANGE column_name new_column_name BIGINT NOT NULL  COMMENT 'comment_msg'
+        增加列
+                ALTER TABLE table_name ADD column_name INT NOT NULL  COMMENT 'comment_msg'
+        添加索引
+                ALTER TABLE table_name ADD INDEX INDEX_NAME (NAME);
+        添加唯一限制条件索
+                ALTER TABLE table_name ADD UNIQUE EMP_NAME2(CARDNUMBER);
+        重命名表
+                ALTER TABLE table_name RENAME new_column_name 
+        删除表中主键
+                ALTER TABLE table_name DROP PRIMARY KEY                   
+        删除索引
+                ALTER TABLE TABLENAME DROP INDEX EMP_NAME;
 
 [ view ] 整个数据中某些表的某些列的数据组合.但是查起来就像是一个单一的表。 视图总是显示最近的数据。用户查询的是最新的数据.
 创建:
@@ -246,8 +261,23 @@ CREATE INDEX index_name ON table_name (column_name)
 	     	降序索引某个列中的值
    	     ALTER TABLE table_name DROP INDEX index_name
 	     	删除表的索引
-____________________________ config ____________________________ 
+[ add remote auth ]
+sql的权限增加
+        grant select,delete,update,create,drop on *.* to test@"%" identified by “tuser”;
+                eg  .grant all privileges on dbname.* to tuser@"%" identified by '1111';
+[ user add ]
+        insert into mysql.user(Host,User,Password) values(“%”,”tuser,password("G9jdW1lbnRzCkRvd25sb2FkcwpMaWJyYXJ5Ck1"));
+[ mysql dump ]
+        导出數據库為dbname的表结构（其中用戶名為root,密码為dbpasswd,生成的脚本名為db.sql）
+                mysqldump -uroot -pdbpasswd -d dbname >db.sql;
+        导出數據库為dbname某张表(test)结构
+                mysqldump -uroot -pdbpasswd -d dbname test>db.sql;
+        导出數據库為dbname所有表结构及表數據（不加-d）
+                mysqldump -uroot -pdbpasswd  dbname >db.sql;
+        导出數據库為dbname某张表(test)结构及表數據（不加-d）
+                mysqldump -uroot -pdbpasswd dbname test>db.sql;
 
+____________________________ config ____________________________ 
 1.yum install mysql-server 才是安装mysql-server 。。
 2.使用 service 启动：service mysqld restart
   使用 mysqld 脚本启动：/etc/inint.d/mysqld restart
@@ -367,4 +397,3 @@ SELECT NOW() FROM table_name
 SELECT FORMAT(column_name,format) FROM table_name
 eg.
 	SELECT ProductName, UnitPrice, FORMAT(Now(),'YYYY-MM-DD') as PerDate
-
