@@ -23,7 +23,13 @@ delete from 表名称 where column_name = 值
 	    delete from table_name 删除所有行
 
 [ show ]
-show databases;  show all the database here;
+show databases                          show all the database here;
+show status                             show status of current mysql server;
+show create table table_name            show how to create the table
+show create database database_name      show how to create the db
+show errors                             show the errors of the sql
+show warnings                           show the warnings of the sql
+help show                               see what you can show
 
 [ use ]
 use db_test; 使用db_test
@@ -104,11 +110,15 @@ describe 表名;
 		between	在某个范围内
 		like	搜索某种模式
 	(and,or)select * from persons where (firstname='thomas' or firstname='william') and lastname='carter'
-		and ,or链接
+		and ,or链接 and比or的判断优先级高
+	(is null)select * from persons where firstname is null
+		判断是否为空
 	(order by)语句用于根据指定的列对结果集进行排序。
 		eg.  select company, ordernumber from orders order by company
 		     select company, ordernumber from orders order by company desc 降序
 		     select company, ordernumber from orders order by company asc  生序
+		     select company, ordernumber from orders order by company asc , id desc 
+                     当有多个的时候，先按照第一个排，再按照第二个排asc ,desc 只作用于它之前的列名字
 	(limit)SELECT * LIMIT  start, offset;
 		eg.
 		     select * from table limit 5,10;  
