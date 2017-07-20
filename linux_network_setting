@@ -1,0 +1,27 @@
+cat >> /etc/security/limits.conf << EOF
+* soft nproc 65535
+* hard nproc 65535
+* soft nofile 65535
+* hard nofile 65535
+EOF
+
+cat >> /etc/sysctl.conf << EOF
+
+
+# add by cc
+fs.file-max = 150000
+net.ipv4.tcp_synack_retries = 2
+net.ipv4.conf.lo.arp_announce=2
+net.ipv4.tcp_max_tw_buckets = 819200
+net.ipv4.tcp_tw_recycle = 1
+net.ipv4.tcp_tw_reuse  = 1
+net.ipv4.tcp_syncookies  = 1
+net.ipv4.tcp_fin_timeout = 15
+net.ipv4.ip_local_port_range = 1024 65535
+net.ipv4.tcp_max_syn_backlog = 65535
+net.core.somaxconn  = 65535
+net.core.netdev_max_backlog  = 200000
+EOF
+_+ 
+
+

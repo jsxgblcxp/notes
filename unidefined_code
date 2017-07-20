@@ -1,0 +1,95 @@
+
+./epoll_1228.tar.gz
+
+int write_string_to_file( std::string str, const char * file_name )
+{
+        FILE * p_file = fopen( file_name , "w" );
+        if ( NULL == p_file ) {
+                return -1;
+        }
+        fprintf( p_file , "%s" , str.c_str() );
+        fclose( p_file );
+        return 0;
+}
+
+int g_buf_file_count = 0;
+inline void write_buf_to_file( void * buf , size_t len )
+{
+        char file_name[ 30 ] = {0};
+        sprintf( file_name , "req_file_name_%d" , g_buf_file_count ++ );
+        FILE * p_file = fopen( file_name , "w" );
+        if ( NULL == p_file ) {
+                fprintf( stderr , "unable to open file" );
+                return ;
+        }
+        fwrite( buf , len , 1 , p_file );
+        fclose( p_file );
+}
+
+#include <unistd.h>
+#include <sys/ioctl.h>
+#include <sys/socket.h>
+#include <net/if.h>
+#include <arpa/inet.h>
+#include <string.h>
+
+int getmyaddr( in_addr * p_val )
+{
+        int sfd, intr;
+        struct ifreq buf[16];
+        struct ifconf ifc;
+        sfd = socket (AF_INET, SOCK_DGRAM, 0);
+        if (sfd < 0)
+                return -1;
+        ifc.ifc_len = sizeof(buf);
+        ifc.ifc_buf = (caddr_t)buf;
+        if (ioctl(sfd, SIOCGIFCONF, (char *)&ifc))
+                return -2;
+        intr = ifc.ifc_len / sizeof(struct ifreq);
+        while (intr-- > 0 && ioctl(sfd, SIOCGIFADDR, (char *)&buf[intr]));
+        close(sfd);
+        memcpy( p_val  , & ( ( (struct sockaddr_in*)(&buf[intr].ifr_addr) )-> sin_addr ) , sizeof( in_addr ) );
+        return 0;
+}
+
+char * getmyip_str()
+{
+        in_addr addr;
+        if ( 0 == getmyaddr( & addr ) ) {
+                return inet_ntoa( addr );
+        } else {
+                return NULL;
+        }
+}
+____________________________ py ____________________________
+
+def sql_run( sql_cmd ):
+        try:
+                conn=MySQLdb.connect(host='10.26.181.132',user='tuser',passwd='tvmining',db='ad_service',port=3306)
+                cur=conn.cursor()
+                res = cur.execute( sql_cmd )
+                check_result = cur.fetchmany( res )
+                cur.close()
+                conn.close()
+                return check_result
+        except MySQLdb.Error,e:
+                print( e )
+                return []
+
+
+#used for file downlaod
+import urllib2
+import os
+print "downloading with urllib2"
+url = 'http://10.20.10.197/approve/live?channel=WuXiEdu&type=ipsd'
+f = urllib2.urlopen(url)
+data = f.read() 
+with open("demo.m3u8", "wb") as code:
+            code.write(data)
+
+os.system( "cat demo.m3u8" )
+
+to_do[ check m3u3 is Successive or not ]
+        in vas new py & auto_fix.py
+kill -9 $(ps aux | grep  | awk '{print $2}' )
+

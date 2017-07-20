@@ -1,0 +1,69 @@
+____________________________ to_do[  ] ____________________________ 
+1.事务性
+2.索引
+________________________________________________________ 
+( add remote auth )
+        grant select,delete,update,create,drop on *.* to test@"%" identified by “tuser”;
+                eg  .grant all privileges on dbname.* to tuser@"%" identified by '1111';
+( add user )
+        insert into mysql.user(Host,User,Password) values(“%”,”tuser,password("G9jdW1lbnRzCkRvd25sb2FkcwpMaWJyYXJ5Ck1"));
+( create table )
+        create table TABLE_NAME
+        ( 
+         id int auto_increment key , 
+         channel_name char( 30 ) NOT NULL  , 
+         udp_source_url char( 80 ) NOT NULL , 
+         site_name  char( 20 ) NOT NULL ,
+         ip  char( 16 ) NOT NULL ,
+         login_uname  char( 16 ) NOT NULL ,
+         ssh_port int NOT NULL, 
+         comment char( 255 ) 
+        );
+( insert tables )
+        insert into persons (firstname,lastname) values ('bill','gates')
+( disable ONLY_FULL_GROUP_BY )
+
+( update )
+        update person set firstname = 'fred' where lastname = 'wilson' 
+
+( msyql dump )
+        1、导出數據库為dbname的表结构（其中用戶名為root,密码為dbpasswd,生成的脚本名為db.sql）
+                mysqldump -uroot -pdbpasswd -d dbname >db.sql;
+
+        2、导出數據库為dbname某张表(test)结构
+                mysqldump -uroot -pdbpasswd -d dbname test>db.sql;
+
+        3、导出數據库為dbname所有表结构及表數據（不加-d）
+                mysqldump -uroot -pdbpasswd  dbname >db.sql;
+
+        4、导出數據库為dbname某张表(test)结构及表數據（不加-d）
+                mysqldump -uroot -pdbpasswd dbname test>db.sql;
+
+( alter table )
+        <修改列>                        alter table [表名字] change [列名称][新列名称] bigint not null  comment '注释说明'
+        <增加列>                        alter table [表名字] add [列名称] int not null  comment '注释说明'
+        <添加索引>                      alter table [表名字] add index index_name (name);
+        <添加唯一限制条件索引>          alter table [表名字] add unique emp_name2(cardnumber);
+        <重命名表>                      alter table [表名字] rename [表新名字]
+        <删除表中主键>                  alter table [表名字] drop primary key                   
+        <删除索引>                      alter table tablename drop index emp_name;
+        <删除列>                        alter table [表名字] drop [列名称]
+
+( lock )
+
+
+( date )
+        date默认修改时更新 alter table vas_seg_fix.fix_job  add update_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP 
+( json )
+        json.loads(encodedjson)
+        json.dumps(obj)
+tmux
+
+difftimestamp to_add
+
+date time
+
+SELECT other fields here, FROM_UNIXTIME(date_ordered)
+FROM orders
+WHERE ...
+( mysql time )

@@ -1,0 +1,7 @@
+[ grep and find ]
+        find . -name "*.cpp" | xargs grep  write_string_to_file
+http://www.cnblogs.com/wdpp/archive/2012/02/28/2386683.html to learn
+
+[ sort ]
+
+        -k 行号 ，按照某一行进行排序

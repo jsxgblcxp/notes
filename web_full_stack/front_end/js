@@ -1,0 +1,70 @@
+1.var
+var a = "123123";
+
+var a = "12\
+3123";
+
+var arr=new Array();
+arr[ 0 ] = 1;
+arr[ 1 ] = 1;
+arr[ 2 ] = 1;
+
+var arr=new Array( 1 , 2 , 3 );
+
+var arr=new Array( 1 , 2 , 3 );
+
+var cars=["Audi","BMW","Volvo"];
+
+var person={
+firstname : "Bill",
+lastname  : "Gates",
+id        :  5566
+};
+
+name=person.lastname;
+name=person["lastname"];
+
+name=null; /* nothing inside */
+
+/* let's new something */
+var carname=new String;
+var x=      new Number;
+var y=      new Boolean;
+var cars=   new Array;
+var person= new Object;
+
+
+car = new Object(); /* add feature easilyka */
+car.size = "1m3";
+car.name = "GTA";
+car.owner = "Json";
+car.color = "red";
+
+//False of Bool
+var myBoolean=new Boolean();
+var myBoolean=new Boolean(0);
+var myBoolean=new Boolean(null);
+var myBoolean=new Boolean("");
+var myBoolean=new Boolean(false);
+var myBoolean=new Boolean(NaN);
+
+/* True of Bool */
+var myBoolean=new Boolean(1);
+var myBoolean=new Boolean(true);
+var myBoolean=new Boolean("true");
+var myBoolean=new Boolean("false");
+var myBoolean=new Boolean("Bill Gates");
+
+2. comment same as c/cpp
+/*var cars=new Array();*/
+//  this is also comment
+
+3.function
+function fc_name( arg1 , arg2 )
+{
+        tmp_name = "lal"; /* this is a global var */
+        return 123; 
+}
+
+4. if ,if ..else , if ..else if ..else if , switch , for , while , break , continue  , try ..catch same as c/cpp
+5.
